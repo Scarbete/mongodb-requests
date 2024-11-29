@@ -1,0 +1,116 @@
+ - (get) получение users
+db.users.find()
+
+ - (post) запрос на добавление нескольких user
+db.users.insertMany([
+    {name: 'User 1', age: 22},
+    {name: 'User 2', age: 19},
+    {name: 'User 3', age: 18},
+    {name: 'User 4', age: 25},
+    {name: 'User 5', age: 22},
+])
+
+ - (if) запрос по users с условием or как значение будет массив с обьектами с query
+db.users.find({$or: [{name: 'Quasar'}, {name: 'Aesthetic'}]})
+
+ - (<) получение с условием что нужны users у которых age меньше 21
+db.users.find({age:{$lt:21}})
+
+ - (<=) получение с условием что нужны users у которых age меньше либо равно 21
+db.users.find({age:{$lte:21}})
+
+ - (>) получение с условием что нужны users у которых age больше 21
+db.users.find({age:{$gt:21}})
+
+ - (>=) получение с условием что нужны users у которых age больше либо равно 21
+db.users.find({age:{$gte:21}})
+
+ - (!==) получение данных где нету обьекта с полем name='Quasar'
+db.users.find({name:{$ne:'Quasar'}})
+
+ - (sort) получение с сортировкой по age
+db.users.find().sort({age:1})
+
+ - (sort) получение с сортировкой по age по обратной
+db.users.find().sort({age:-1})
+
+ - (limit) получение ограниченное количество данных
+db.users.find().limit(2)
+
+ - (find by id) получение конкретного обьекта по id & age
+1 - db.users.findOne({_id:ObjectId('67478b49609e490415829a7c')})
+2 - db.users.findOne({age:25})
+
+ - (update) находит самый первый схожий обьект и обновляет данные
+db.users.update(
+  {name: 'Quasar'},
+  {
+		$set: {
+			name: 'Quasar updated',
+		}
+	}
+)
+
+ - (updateMany) обновление полей name на fullname
+db.users.updateMany(
+  {},
+  {
+		$rename: {
+			name: 'fullname'
+		}
+  }
+)
+
+ - (bulkWrite) - добавление и удаление
+db.users.bulkWrite(
+    [
+        {
+        	insertOne: {
+        	    document: {
+                       fullname: 'Quasar1337',
+                       age: 1337
+       		    }
+            }
+        },
+        {
+            deleteOne: {
+                filter: {
+                    fullname: 'Yanehz'
+                }
+            }
+        }
+    ]
+)
+
+ - update, что-то по типу ForeignKey
+db.users.update(
+    {fullname: 'Quasar updated'},
+    {
+        $set: {
+            posts: [
+                {title: 'JavaScript', text: 'JS top'},
+                {title: 'React', text: 'good library'},
+            ]
+        }
+    }
+)
+
+ - findOne получаем только посты данного пользователя
+db.users.findOne(
+    {fullname: 'Quasar updated'},
+    {posts: 1}
+)
+
+ - find поиск пользователя у которого есть пост с title === 'JavaScript'
+db.users.find(
+    {
+        posts: {
+            $elemMatch: {
+                title: 'JavaScript'
+            }
+        }
+    }
+)
+
+ - ($exists) получаем те данные у которых есть posts
+db.users.find({posts: {$exists: true}})
